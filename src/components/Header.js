@@ -1,4 +1,4 @@
 export const Header = () => <header>
-  <h1>Minimal React Template</h1>
-  <p>Because <code>create-react-app</code> has way too much extra boilerplate</p>
+  <h1>Weekly Market Update Generator</h1>
+  <p>Use this <code>React</code> app to generate the Weekly Market Update :)</p>
 </header>
