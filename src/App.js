@@ -1,24 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import {Header} from "./components/Header"
+import {Clock} from "./components/Clock"
+import {Footer} from "./components/Footer"
+import styled from 'styled-components'
+
+// custom styling using styled-components!
+const AppContainer = styled.div`
+  margin: 40vh 30vw;
+`
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppContainer>
+      <Header/>
+      <Clock/>
+      <Footer/>
+    </AppContainer>
   );
 }
 
