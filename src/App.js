@@ -6,7 +6,6 @@ import { Footer } from "./components/Footer";
 import styled from 'styled-components';
 
 import { FileUpload } from "./components/FileUpload";
-import ExcelTable from "./components/ExcelTable"; // Import ExcelTable component
 
 // custom styling using styled-components!
 const AppContainer = styled.div`
@@ -37,7 +36,7 @@ const FileUploadContainer = styled.div`
 `;
 
 function App() {
-  const [fileData, setFileData] = useState(null); // State to hold the uploaded file data
+  const [setFileData] = useState(null); // State to hold the uploaded file data
 
   const handleFileUpload = (fileData) => {
     console.log(fileData); // Log the uploaded file data
@@ -60,10 +59,6 @@ function App() {
       </Section>
       <Section bgColor="#fff" shadow="0px 4px 8px rgba(0, 0, 0, 0.1)">
         <h2>Step 2: Display Table</h2>
-        {/* Only show the table if file data exists */}
-        {fileData && fileData.content && (
-          <ExcelTable fileData={fileData} />
-        )}
       </Section>
       <Section bgColor="#fff" shadow="0px 4px 8px rgba(0, 0, 0, 0.1)">
         <h2>Step 3: Additional Content</h2>
