@@ -2,6 +2,7 @@
 
 /api/__pycache__
 /api/.env
+/api/bhep_data_resources.json
 
 # dependencies
 /node_modules
