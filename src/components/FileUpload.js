@@ -195,9 +195,11 @@ export const FileUpload = ({ label, onFileUpload }) => {
         onChange={handleFileChange}
         id={`file-upload-${label}`}
       />
-      <ChooseFileButton htmlFor={`file-upload-${label}`}>
-        {fileName ? "Uploaded!" : "Choose Files"}
-      </ChooseFileButton>
+      {!fileName && (
+        <ChooseFileButton htmlFor={`file-upload-${label}`}>
+          Choose Files
+        </ChooseFileButton>
+      )}
       {fileName && (
         <RemoveFileButton onClick={removeFile}>×</RemoveFileButton>
       )}

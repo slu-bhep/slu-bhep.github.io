@@ -36,11 +36,37 @@ const FileUploadContainer = styled.div`
 `;
 
 function App() {
-  const [setFileData] = useState(null); // State to hold the uploaded file data
+  const [fileData, setFileData] = useState(null); // State to hold the uploaded file data
 
-  const handleFileUpload = (fileData) => {
+  const handleFileUpload = (fileData, label) => {
     console.log(fileData); // Log the uploaded file data
     setFileData(fileData); // Set the uploaded file data to state
+
+    const originalName = fileData.name;
+    const extension = originalName.substring(originalName.lastIndexOf('.'));
+    const newName = `${label}${extension}`;
+
+    const fileWithNewName = {
+      name: newName,
+      content: fileData.content
+    };
+
+    console.log('File with new name:', fileWithNewName);
+
+    fetch('http://127.0.0.1:5000/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(fileWithNewName),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('File uploaded successfully:', data);
+      })
+      .catch((error) => {
+        console.error('Error uploading file:', error);
+      })
   };
 
   return (
@@ -50,11 +76,11 @@ function App() {
       <Section bgColor="#f0f8ff" shadow="0px 4px 8px rgba(0, 0, 0, 0.1)">
         <h2>Step 1: File Upload</h2>
         <FileUploadContainer>
-          <FileUpload label="PE1" onFileUpload={handleFileUpload} />
-          <FileUpload label="PE2" onFileUpload={handleFileUpload} />
-          <FileUpload label="M&A" onFileUpload={handleFileUpload} />
-          <FileUpload label="IPOs" onFileUpload={handleFileUpload} />
-          <FileUpload label="MGMT" onFileUpload={handleFileUpload} />
+          <FileUpload label="PE1" onFileUpload={(fileData) => handleFileUpload(fileData, "PE1")} />
+          <FileUpload label="PE2" onFileUpload={(fileData) => handleFileUpload(fileData, "PE2")} />
+          <FileUpload label="M&A" onFileUpload={(fileData) => handleFileUpload(fileData, "M&A")} />
+          <FileUpload label="IPOs" onFileUpload={(fileData) => handleFileUpload(fileData, "IPOs")} />
+          <FileUpload label="MGMT" onFileUpload={(fileData) => handleFileUpload(fileData, "MGMT")} />
         </FileUploadContainer>
       </Section>
       <Section bgColor="#fff" shadow="0px 4px 8px rgba(0, 0, 0, 0.1)">

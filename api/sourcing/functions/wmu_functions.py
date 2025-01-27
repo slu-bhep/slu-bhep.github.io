@@ -5,6 +5,9 @@ import re
 import win32com.client as win32
 from dotenv import load_dotenv
 import os
+from google.cloud import bigquery
+from google.oauth2 import service_account
+import pandas_gbq
 
 from openai import OpenAI
 
@@ -25,16 +28,24 @@ fx = ForeignExchange(key=fx_api_key, output_format='pandas')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+# BIGQUERY CREDENTIALS
+
+serviceAccountKeyFile = '/dbfs/FileStore/keys/polycor_data_warehouse.json'
+
+bq_credentials = service_account.Credentials.from_service_account_file(
+    serviceAccountKeyFile,
+    scopes=['https://www.googleapis.com/auth/cloud-platform',
+            "https://www.googleapis.com/auth/drive",
+            "https://www.googleapis.com/auth/bigquery"]
+)
+
+bq_project = 'bhep-data-resources'
+
 # --------------------------------------------------------------------------------  OVERALL FUNCTIONS
 
-def load_wmu_data(source_path, database_path):
+def load_wmu_data(source_path):
     try:
         pe1 = pd.read_excel(f"{source_path}/PE1.xlsx", skiprows=6).dropna(subset='Deal ID').drop("Registration Number", axis=1).drop("Emerging Spaces", axis=1)
-        # try:
-        #     db = pd.read_csv(database_path)
-        # except:
-        #     db = []
-        # pe1 = pe1[~pe1['Deal ID'].isin(db['deal_id'].to_list())]
     except:
         pe1 = pd.DataFrame()
     
