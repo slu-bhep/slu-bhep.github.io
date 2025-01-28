@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 import { Header } from "./components/Header";
 import { Clock } from "./components/Clock";
 import { Footer } from "./components/Footer";
+import { Button } from "./components/Button";
 import styled from 'styled-components';
 
 import { FileUpload } from "./components/FileUpload";
 
-// custom styling using styled-components!
+// Custom styling using styled-components!
 const AppContainer = styled.div`
   margin: 0 auto;
   display: flex;
@@ -35,8 +36,13 @@ const FileUploadContainer = styled.div`
   gap: 10px;
 `;
 
+const ButtonContainer = styled.div`
+  margin-top: 20px;
+`;
+
 function App() {
   const [fileData, setFileData] = useState(null); // State to hold the uploaded file data
+  const [allFilesUploaded, setAllFilesUploaded] = useState(false); // State to track if all files are uploaded
 
   const handleFileUpload = (fileData, label) => {
     console.log(fileData); // Log the uploaded file data
@@ -69,6 +75,21 @@ function App() {
       })
   };
 
+  const handleAllFilesUploaded = () => {
+    setAllFilesUploaded(true); // Set all files uploaded status to true when button is clicked
+
+    fetch('http://127.0.0.1:5000/process-files', {
+      method: 'POST',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Files processed:', data);
+      })
+      .catch((error) => {
+        console.error('Error processing files:', error);
+      });
+  };
+
   return (
     <AppContainer>
       <Header />
@@ -82,7 +103,11 @@ function App() {
           <FileUpload label="IPOs" onFileUpload={(fileData) => handleFileUpload(fileData, "IPOs")} />
           <FileUpload label="MGMT" onFileUpload={(fileData) => handleFileUpload(fileData, "MGMT")} />
         </FileUploadContainer>
+        <ButtonContainer>
+          <Button onClick={handleAllFilesUploaded} label="I’ve uploaded all files" hasUploaded={allFilesUploaded} />
+        </ButtonContainer>
       </Section>
+
       <Section bgColor="#fff" shadow="0px 4px 8px rgba(0, 0, 0, 0.1)">
         <h2>Step 2: Display Table</h2>
       </Section>

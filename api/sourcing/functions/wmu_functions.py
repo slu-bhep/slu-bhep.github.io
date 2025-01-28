@@ -5,11 +5,11 @@ import re
 import win32com.client as win32
 from dotenv import load_dotenv
 import os
-from google.cloud import bigquery
-from google.oauth2 import service_account
-import pandas_gbq
+# from google.cloud import bigquery
+# from google.oauth2 import service_account
+# import pandas_gbq
 
-from openai import OpenAI
+# from openai import OpenAI
 
 from alpha_vantage.foreignexchange import ForeignExchange
 
@@ -26,20 +26,20 @@ fx_api_key = 'W3BYO6IK9JLM4RQZ' # Stephanie's free API key (25 API calls/day)
 fx = ForeignExchange(key=fx_api_key, output_format='pandas')
 
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-client = OpenAI(api_key=OPENAI_API_KEY)
+# client = OpenAI(api_key=OPENAI_API_KEY)
 
 # BIGQUERY CREDENTIALS
 
-serviceAccountKeyFile = '/dbfs/FileStore/keys/polycor_data_warehouse.json'
+# serviceAccountKeyFile = '/dbfs/FileStore/keys/polycor_data_warehouse.json'
 
-bq_credentials = service_account.Credentials.from_service_account_file(
-    serviceAccountKeyFile,
-    scopes=['https://www.googleapis.com/auth/cloud-platform',
-            "https://www.googleapis.com/auth/drive",
-            "https://www.googleapis.com/auth/bigquery"]
-)
+# bq_credentials = service_account.Credentials.from_service_account_file(
+#     serviceAccountKeyFile,
+#     scopes=['https://www.googleapis.com/auth/cloud-platform',
+#             "https://www.googleapis.com/auth/drive",
+#             "https://www.googleapis.com/auth/bigquery"]
+# )
 
-bq_project = 'bhep-data-resources'
+# bq_project = 'bhep-data-resources'
 
 # --------------------------------------------------------------------------------  OVERALL FUNCTIONS
 
@@ -55,19 +55,25 @@ def load_wmu_data(source_path):
         pe2 = pd.DataFrame()
     
     try:
-        mna = pd.read_excel(f"{source_path}/PublicM&AActivity.xls", skiprows=7).dropna(subset='Target/Issuer')
+        mna = pd.read_excel(f"{source_path}/M&A.xls", skiprows=7).dropna(subset='Target/Issuer')
     except:
         mna = pd.DataFrame()
     
     try:    
-        ipo = pd.read_excel(f"{source_path}/NotableFinancings_PublicOfferings.xls", skiprows=7).dropna(subset='Target/Issuer')
+        ipo = pd.read_excel(f"{source_path}/IPOs.xls", skiprows=7).dropna(subset='Target/Issuer')
     except:
         ipo = pd.DataFrame()
 
     try:    
-        mgmt = pd.read_excel(f"{source_path}/PublicCompanyKeyManagementChanges.xls", skiprows=7, skipfooter=2).dropna(subset='Company Name')
+        mgmt = pd.read_excel(f"{source_path}/MGMT.xls", skiprows=7, skipfooter=2).dropna(subset='Company Name')
     except:
         mgmt = pd.DataFrame()
+
+    pe1.to_csv(f"{source_path}/clean/PE1.csv")
+    pe2.to_csv(f"{source_path}/clean/PE2.csv")
+    mna.to_csv(f"{source_path}/clean/M&A.csv")
+    ipo.to_csv(f"{source_path}/clean/IPOs.csv")
+    mgmt.to_csv(f"{source_path}/clean/MGMT.csv")
     
     return pe1, pe2, mna, ipo, mgmt
 
