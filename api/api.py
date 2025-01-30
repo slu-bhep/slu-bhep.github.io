@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 import pandas as pd
 from sourcing.functions.wmu_functions import load_wmu_data
+import json
 
 app = Flask(__name__)
 CORS(app, origins=['http://localhost:3000'])
@@ -40,6 +41,31 @@ def process_files():
     pe1, pe2, mna, ipo, mgmt = load_wmu_data(source_path)
 
     return jsonify({'message': 'Files processed successfully!'}), 200
+
+
+# Store the configuration in a file for persistence (you can also use a database)
+CONFIG_FILE = 'config.json'
+
+
+def save_config(config_data):
+    """Save the configuration to a file."""
+    try:
+        with open(CONFIG_FILE, 'w') as f:
+            json.dump(config_data, f, indent=4)
+        return True
+    except Exception as e:
+        return False, str(e)
+
+
+@app.route('/save-config', methods=['POST'])
+def save_config_route():
+    config_data = request.json  # Receive the JSON payload from the frontend
+    success, error_message = save_config(config_data)
+
+    if success:
+        return jsonify({'message': 'Config saved successfully!'}), 200
+    else:
+        return jsonify({'error': f'Failed to save config: {error_message}'}), 500
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FiSave, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiSave, FiChevronLeft, FiChevronRight, FiInfo } from 'react-icons/fi';
 
 // Sidebar Container - Floating Flat Panel
 const SidebarContainer = styled.div`
@@ -22,7 +22,7 @@ const BackgroundOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, ${(props) => (props.collapsed ? '0' : '0.4')}); /* No dark grey when collapsed */
+  background: rgba(0, 0, 0, ${(props) => (props.collapsed ? '0' : '0.1')}); /* No dark grey when collapsed */
   transition: background 0.3s ease-in-out;
   pointer-events: ${(props) => (props.collapsed ? 'none' : 'auto')};
 `;
@@ -64,6 +64,7 @@ const ConfigOption = styled.div`
   padding: 12px 15px;
   margin-bottom: 10px;
   transition: all 0.3s ease;
+  position: relative;
 
   &:hover {
     background: #f0f4ff;
@@ -74,6 +75,30 @@ const Label = styled.label`
   font-size: 1rem;
   font-weight: 500;
   color: #444;
+  display: flex;
+  align-items: center;
+`;
+
+const Tooltip = styled.div`
+  position: absolute;
+  background-color: #333;
+  color: white;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  z-index: 9999;
+  top: 50%;
+  left: 100%; /* Positioned to the right */
+  transform: translateX(10px) translateY(-50%); /* Slight space and vertically centered */
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  ${ConfigOption}:hover & {
+    visibility: visible;
+    opacity: 1;
+  }
 `;
 
 const Checkbox = styled.input`
@@ -120,12 +145,42 @@ const SaveButton = styled.button`
   }
 `;
 
+const LABELS = {
+  GPT: "Use GPT",
+  UPDATE_DATABASE: "Update Database",
+  SEND_DRAFT_WMU: "Send WMU Draft",
+  SEND_DRAFT_JLOH: "Send JLoh Draft",
+  WEEKS: "Weeks",
+  DELAY: "Delay (Days from Thursday)",
+  UPDATE_DEAL_STATUS: "Update Deal Status",
+  source_path: "Source Files Path",
+  database_path: "Database Path",
+  fivetran_email: "Fivetran Email",
+  email_to: "Recipient Email",
+  name: "Name",
+};
+
+const TOOLTIP_TEXT = {
+  GPT: "Use GPT to write and format the WMU.",
+  UPDATE_DATABASE: "Update BigQuery tables with new deal data.",
+  SEND_DRAFT_WMU: "Send yourself a draft of the WMU email.",
+  SEND_DRAFT_JLOH: "Send yourself a draft of the WMU Check email to JLoh.",
+  WEEKS: "Number of weeks of deals covered in the WMU.",
+  DELAY: "Number of days we are from Thursday.",
+  UPDATE_DEAL_STATUS: "Update 'In DealCloud', 'In Market', and 'Reviewed by BH' fields.",
+  source_path: "Path to the source files for with deal data.",
+  database_path: "Path to BigQuery tables.",
+  fivetran_email: "Fivetran email used for syncing data to BigQuery.",
+  email_to: "Email address to send the email drafts.",
+  name: "Name to use for the email salutations.",
+};
+
 function Config() {
   const [collapsed, setCollapsed] = useState(false);
   const [config, setConfig] = useState({
-    GPT: false,
+    GPT: true,
     UPDATE_DATABASE: false,
-    SEND_DRAFT_WMU: false,
+    SEND_DRAFT_WMU: true,
     SEND_DRAFT_JLOH: true,
     WEEKS: 1,
     DELAY: 0,
@@ -173,7 +228,10 @@ function Config() {
             <ConfigHeader>⚙️ Configuration</ConfigHeader>
             {Object.keys(config).map((key) => (
               <ConfigOption key={key}>
-                <Label>{key.replace(/_/g, ' ')}</Label>
+                <Label>
+                  {LABELS[key] || key.replace(/_/g, ' ')}
+                  <Tooltip>{TOOLTIP_TEXT[key] || "No description available."}</Tooltip>
+                </Label>
                 {typeof config[key] === 'boolean' ? (
                   <Checkbox
                     type="checkbox"
