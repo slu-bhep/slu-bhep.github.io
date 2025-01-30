@@ -4,19 +4,23 @@ import { Header } from "./components/Header";
 import { Clock } from "./components/Clock";
 import { Footer } from "./components/Footer";
 import { Button } from "./components/Button";
-import styled from 'styled-components';
-
 import { FileUpload } from "./components/FileUpload";
+import Config from "./components/Config";
+import styled from 'styled-components';
 
 // Custom styling using styled-components!
 const AppContainer = styled.div`
-  margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+`;
+
+// Main content area
+const MainContent = styled.div`
+  margin-left: 320px; /* Adjust for sidebar width */
+  width: calc(100% - 320px);
   padding: 20px;
 `;
 
@@ -26,7 +30,7 @@ const Section = styled.section`
   margin: 20px 0;
   background-color: ${(props) => props.bgColor || "#fff"};
   border-radius: 10px;
-  box-shadow: ${(props) => props.shadow || "none"};
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const FileUploadContainer = styled.div`
@@ -41,12 +45,12 @@ const ButtonContainer = styled.div`
 `;
 
 function App() {
-  const [fileData, setFileData] = useState(null); // State to hold the uploaded file data
-  const [allFilesUploaded, setAllFilesUploaded] = useState(false); // State to track if all files are uploaded
+  const [fileData, setFileData] = useState(null);
+  const [allFilesUploaded, setAllFilesUploaded] = useState(false);
 
   const handleFileUpload = (fileData, label) => {
-    console.log(fileData); // Log the uploaded file data
-    setFileData(fileData); // Set the uploaded file data to state
+    console.log(fileData);
+    setFileData(fileData);
 
     const originalName = fileData.name;
     const extension = originalName.substring(originalName.lastIndexOf('.'));
@@ -72,11 +76,11 @@ function App() {
       })
       .catch((error) => {
         console.error('Error uploading file:', error);
-      })
+      });
   };
 
   const handleAllFilesUploaded = () => {
-    setAllFilesUploaded(true); // Set all files uploaded status to true when button is clicked
+    setAllFilesUploaded(true);
 
     fetch('http://127.0.0.1:5000/process-files', {
       method: 'POST',
@@ -92,29 +96,33 @@ function App() {
 
   return (
     <AppContainer>
-      <Header />
-      <Clock />
-      <Section bgColor="#f0f8ff" shadow="0px 4px 8px rgba(0, 0, 0, 0.1)">
-        <h2>Step 1: File Upload</h2>
-        <FileUploadContainer>
-          <FileUpload label="PE1" onFileUpload={(fileData) => handleFileUpload(fileData, "PE1")} />
-          <FileUpload label="PE2" onFileUpload={(fileData) => handleFileUpload(fileData, "PE2")} />
-          <FileUpload label="M&A" onFileUpload={(fileData) => handleFileUpload(fileData, "M&A")} />
-          <FileUpload label="IPOs" onFileUpload={(fileData) => handleFileUpload(fileData, "IPOs")} />
-          <FileUpload label="MGMT" onFileUpload={(fileData) => handleFileUpload(fileData, "MGMT")} />
-        </FileUploadContainer>
-        <ButtonContainer>
-          <Button onClick={handleAllFilesUploaded} label="I’ve uploaded all files" hasUploaded={allFilesUploaded} />
-        </ButtonContainer>
-      </Section>
+        <Config />
+      
+      <MainContent>
+        <Header />
+        <Clock />
+        <Section bgColor="#f0f8ff">
+          <h2>Step 1: File Upload</h2>
+          <FileUploadContainer>
+            <FileUpload label="PE1" onFileUpload={(fileData) => handleFileUpload(fileData, "PE1")} />
+            <FileUpload label="PE2" onFileUpload={(fileData) => handleFileUpload(fileData, "PE2")} />
+            <FileUpload label="M&A" onFileUpload={(fileData) => handleFileUpload(fileData, "M&A")} />
+            <FileUpload label="IPOs" onFileUpload={(fileData) => handleFileUpload(fileData, "IPOs")} />
+            <FileUpload label="MGMT" onFileUpload={(fileData) => handleFileUpload(fileData, "MGMT")} />
+          </FileUploadContainer>
+          <ButtonContainer>
+            <Button onClick={handleAllFilesUploaded} label="I’ve uploaded all files" hasUploaded={allFilesUploaded} />
+          </ButtonContainer>
+        </Section>
 
-      <Section bgColor="#fff" shadow="0px 4px 8px rgba(0, 0, 0, 0.1)">
-        <h2>Step 2: Display Table</h2>
-      </Section>
-      <Section bgColor="#fff" shadow="0px 4px 8px rgba(0, 0, 0, 0.1)">
-        <h2>Step 3: Additional Content</h2>
-      </Section>
-      <Footer />
+        <Section>
+          <h2>Step 2: Display Table</h2>
+        </Section>
+        <Section>
+          <h2>Step 3: Additional Content</h2>
+        </Section>
+        <Footer />
+      </MainContent>
     </AppContainer>
   );
 }
