@@ -1,0 +1,14 @@
+{
+    "GPT": true,
+    "UPDATE_DATABASE": true,
+    "SEND_DRAFT_WMU": true,
+    "SEND_DRAFT_JLOH": true,
+    "WEEKS": 1,
+    "DELAY": 0,
+    "UPDATE_DEAL_STATUS": true,
+    "source_path": "S:\\Data Science\\11. Sourcing and Screening\\5. Weekly Market Update",
+    "database_path": "C:\\Users\\slu\\AppData\\Local\\Google\\Cloud SDK\\output.csv",
+    "fivetran_email": "slu@birchhillequity.com",
+    "email_to": "slu@birchhillequity.com",
+    "name": "Stephanie"
+}

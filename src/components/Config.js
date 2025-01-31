@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FiSave, FiChevronLeft, FiChevronRight, FiInfo } from 'react-icons/fi';
+import { FiSave, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 // Sidebar Container - Floating Flat Panel
 const SidebarContainer = styled.div`
   position: fixed;
-  left: ${(props) => (props.collapsed ? '-350px' : '20px')}; /* Moves completely out when collapsed */
+  left: ${(props) => (props.collapsed ? '-350px' : '20px')};
   top: 20px;
   width: 300px;
   background: white;
@@ -22,7 +22,7 @@ const BackgroundOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, ${(props) => (props.collapsed ? '0' : '0.1')}); /* No dark grey when collapsed */
+  background: rgba(0, 0, 0, ${(props) => (props.collapsed ? '0' : '0.05')});
   transition: background 0.3s ease-in-out;
   pointer-events: ${(props) => (props.collapsed ? 'none' : 'auto')};
 `;
@@ -42,7 +42,7 @@ const ToggleButton = styled.button`
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: #005bbf;
   }
@@ -88,8 +88,8 @@ const Tooltip = styled.div`
   font-size: 0.9rem;
   z-index: 9999;
   top: 50%;
-  left: 100%; /* Positioned to the right */
-  transform: translateX(10px) translateY(-50%); /* Slight space and vertically centered */
+  left: 100%;
+  transform: translateX(10px) translateY(-50%);
   white-space: nowrap;
   visibility: hidden;
   opacity: 0;
@@ -168,51 +168,18 @@ const TOOLTIP_TEXT = {
   WEEKS: "Number of weeks of deals covered in the WMU.",
   DELAY: "Number of days we are from Thursday.",
   UPDATE_DEAL_STATUS: "Update 'In DealCloud', 'In Market', and 'Reviewed by BH' fields.",
-  source_path: "Path to the source files for with deal data.",
+  source_path: "Path to the source files for deal data.",
   database_path: "Path to BigQuery tables.",
   fivetran_email: "Fivetran email used for syncing data to BigQuery.",
   email_to: "Email address to send the email drafts.",
   name: "Name to use for the email salutations.",
 };
 
-function Config() {
+function Config({ config, setConfig, saveConfig }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [config, setConfig] = useState({
-    GPT: true,
-    UPDATE_DATABASE: false,
-    SEND_DRAFT_WMU: true,
-    SEND_DRAFT_JLOH: true,
-    WEEKS: 1,
-    DELAY: 0,
-    UPDATE_DEAL_STATUS: true,
-    source_path: "S:\\Data Science\\11. Sourcing and Screening\\5. Weekly Market Update",
-    database_path: "C:\\Users\\slu\\AppData\\Local\\Google\\Cloud SDK\\output.csv",
-    fivetran_email: "slu@birchhillequity.com",
-    email_to: "slu@birchhillequity.com",
-    name: "Stephanie",
-  });
 
   const handleChange = (key, value) => {
     setConfig((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const saveConfig = () => {
-    console.log("Saving config:", config);
-
-    fetch('http://127.0.0.1:5000/save-config', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(config),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Config saved:', data);
-      })
-      .catch((error) => {
-        console.error('Error saving config:', error);
-      });
   };
 
   return (

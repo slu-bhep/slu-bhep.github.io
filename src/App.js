@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { Header } from "./components/Header";
 import { Clock } from "./components/Clock";
 import { Footer } from "./components/Footer";
@@ -47,6 +46,20 @@ const ButtonContainer = styled.div`
 function App() {
   const [fileData, setFileData] = useState(null);
   const [allFilesUploaded, setAllFilesUploaded] = useState(false);
+  const [config, setConfig] = useState({
+    GPT: true,
+    UPDATE_DATABASE: false,
+    SEND_DRAFT_WMU: true,
+    SEND_DRAFT_JLOH: true,
+    WEEKS: 1,
+    DELAY: 0,
+    UPDATE_DEAL_STATUS: true,
+    source_path: "S:\\Data Science\\11. Sourcing and Screening\\5. Weekly Market Update",
+    database_path: "C:\\Users\\slu\\AppData\\Local\\Google\\Cloud SDK\\output.csv",
+    fivetran_email: "slu@birchhillequity.com",
+    email_to: "slu@birchhillequity.com",
+    name: "Stephanie",
+  });
 
   const handleFileUpload = (fileData, label) => {
     console.log(fileData);
@@ -94,10 +107,27 @@ function App() {
       });
   };
 
+  const saveConfig = () => {
+    console.log("Saving config:", config);
+  
+    fetch('http://127.0.0.1:5000/save-config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Files processed:', data);
+      })
+      .catch((error) => {
+        console.error('Error processing files:', error);
+      });
+  };
+
   return (
     <AppContainer>
-        <Config />
-      
+      <Config config={config} setConfig={setConfig} saveConfig={saveConfig} />
+
       <MainContent>
         <Header />
         <Clock />

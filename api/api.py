@@ -43,30 +43,25 @@ def process_files():
     return jsonify({'message': 'Files processed successfully!'}), 200
 
 
-# Store the configuration in a file for persistence (you can also use a database)
-CONFIG_FILE = 'config.json'
-
-
-def save_config(config_data):
+def save_config(config_data, CONFIG_FILE='./sourcing/sources/config/config.json'):
     """Save the configuration to a file."""
     try:
         with open(CONFIG_FILE, 'w') as f:
             json.dump(config_data, f, indent=4)
-        return True
+        return jsonify({'message': 'Config file saved successfully!'}), 200
     except Exception as e:
-        return False, str(e)
+        print("Error writing config file:", str(e))
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/save-config', methods=['POST'])
 def save_config_route():
-    config_data = request.json  # Receive the JSON payload from the frontend
-    success, error_message = save_config(config_data)
+    config_data = request.get_json()
 
-    if success:
-        return jsonify({'message': 'Config saved successfully!'}), 200
-    else:
-        return jsonify({'error': f'Failed to save config: {error_message}'}), 500
-
+    if not config_data:
+        return jsonify({'error': 'No configuration data provided'}), 400
+    
+    return save_config(config_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
