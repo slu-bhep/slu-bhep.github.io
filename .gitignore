@@ -1,19 +1,19 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-/api/__pycache__
-/api/.env
-/api/bhep_data_resources.json
+.venv
+
+/backend/__pycache__
+/backend/.env
+/backend/bhep_data_resources.json
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+/frontend/node_modules
 
 # testing
 /coverage
 
 # production
-/build
+/frontend/build
 
 # misc
 .DS_Store
